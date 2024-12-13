@@ -1,3 +1,7 @@
+# PRH ignores
+**/*.DS_Store
+*.gif
+.idea/*
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
