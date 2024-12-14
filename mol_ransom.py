@@ -1,15 +1,19 @@
 from rdkit import Chem
 from rdkit.Chem import Draw
-import warnings
+import warnings, string
 from rdkit.Chem.Draw import MolsToGridImage
 import molfiles
-import imageio
+import imageio, click
 import math
 import tempfile
 from rdkit.Chem.Draw import rdMolDraw2D
 
 _letter_to_mol_dict = dict([[l, Chem.MolFromMolBlock(mol_file)]
                             for l, mol_file in molfiles.letter_to_molfile.items()])
+
+def _valid_characters():
+    set_ok_to_miss = {'\t', '\n', '\r', '\x0b', '\x0c'}
+    return [s for s in string.printable if s not in set_ok_to_miss]
 
 def single_word_per_line(string_v):
     words = string_v.split(" ")
@@ -31,7 +35,7 @@ def ascii_to_mols(string):
 
 def to_image(output_file,mols,same_scale=True,padding=0.00,
              black_and_white=False,rotate_degrees=None,
-             letters_per_row=5):
+             letters_per_row=5,comic_mode=False):
     opt = Draw.MolDrawOptions()
     if black_and_white:
         opt.useBWAtomPalette()
@@ -39,6 +43,8 @@ def to_image(output_file,mols,same_scale=True,padding=0.00,
         opt.rotate = rotate_degrees
     opt.prepareMolsBeforeDrawing = False
     opt.drawMolsSameScale = same_scale
+    if comic_mode:
+        opt.comicMode = True
     opt.padding = padding
     opt.fixedScale = 0.05
     opt.centreMoleculesBeforeDrawing = False
@@ -46,22 +52,25 @@ def to_image(output_file,mols,same_scale=True,padding=0.00,
                           drawOptions=opt)
     img.save(output_file)
 
-def acscii_to_mol_image(string,output_file,one_word_per_line=False,**kw):
-    string, kw = adjust_kw_as_needed(string, one_word_per_line=one_word_per_line,
+def _acscii_to_mol_image(string,output_file,one_word_per_line=False,**kw):
+    string, kw = adjust_kw_as_needed(string=string,
+                                     one_word_per_line=one_word_per_line,
                                      kw=kw)
     mols = ascii_to_mols(string)
     to_image(output_file,mols,**kw)
 
-def adjust_kw_as_needed(one_word_per_line,string,kw):
+def adjust_kw_as_needed(string,one_word_per_line,kw):
     if one_word_per_line:
         string, length = single_word_per_line(string)
         kw['letters_per_row'] = length
     return string, kw
 
-def ascii_to_mol_movie(string,output_file,total_time_s=5,rotation_degrees=360,
-                       s_per_frame=1/5,one_word_per_line=False,loop_forever=True,
-                       start_degrees=0,and_reverse=False,**kw):
-    string, kw = adjust_kw_as_needed(one_word_per_line,string, kw)
+def _ascii_to_mol_movie(string,output_file,total_time_s=5,rotation_degrees=90,
+                        s_per_frame=1/5,one_word_per_line=False,loop_forever=True,
+                        start_degrees=-45,and_reverse=False,**kw):
+    string, kw = adjust_kw_as_needed(string=string,
+                                     one_word_per_line=one_word_per_line,
+                                     kw=kw)
     total_frames = int(math.ceil(total_time_s/s_per_frame))
     degrees_per_frame = rotation_degrees/total_frames
     assert total_frames > 1 , "Must have at least one frame"
@@ -78,11 +87,13 @@ def ascii_to_mol_movie(string,output_file,total_time_s=5,rotation_degrees=360,
                     to_image(temp.name, mols, rotate_degrees=rotate_degrees,**kw)
                     image = imageio.v3.imread(temp.name)
                     writer.append_data(image)
-    foo = 1
-
-def run():
-    pass
 
 
-if __name__ == "__main__":
-    run()
+@click.group()
+@click.option('--debug/--no-debug', default=False)
+def cli(debug):
+    click.echo(f"Debug mode is {'on' if debug else 'off'}")
+
+@cli.command()  # @cli, not @click!
+def sync():
+    click.echo('Syncing')
