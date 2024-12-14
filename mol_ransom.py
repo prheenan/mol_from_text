@@ -7,34 +7,27 @@ import imageio, click
 import math
 import tempfile
 from rdkit.Chem.Draw import rdMolDraw2D
+from click import ParamType
 
-def process_true_false(value):
-    """
+class BoolType(ParamType):
+    def __init__(self):
+        pass
 
-    :param value: value
-    :return: true if the value is like TRUE (case insensitive"
-    """
-    return str(value).upper() == "TRUE"
-
-def process_arguments(kw_args):
-    """
-
-    :param kw_args: arguments for cli
-    :return: processed arguments, where boolean-like arguments (e.g., True/False) are transformed
-    """
-    set_bool = ['one_word_per_line',
-                'and_reverse',
-                'comic_mode',
-                'black_and_white',
-                'loop_forever']
-    for k,v in kw_args.items():
-        if k in set_bool:
-            kw_args[k] = process_true_false(v)
-    return kw_args
+    def get_metavar(self, param):
+        return 'Choice([TRUE/True/FALSE/False])'
 
 
-kw_true_false = dict(type=click.Choice([True,False,"FALSE","False","TRUE","True"]),
-                     required=False)
+    def convert(self, value, _, __):
+        upper = str(value).upper()
+        if upper == "TRUE":
+            return True
+        elif upper == "FALSE":
+            return False
+        else:
+            self.fail(f"Invalid value: {value}. Expected TRUE/FALSE")
+
+
+kw_true_false = dict(type=BoolType(),required=False)
 
 
 _letter_to_mol_dict = dict([[l, Chem.MolFromMolBlock(mol_file)]
@@ -84,12 +77,11 @@ def ascii_to_mols(string):
         rdMolDraw2D.PrepareMolForDrawing(m)
     return mols
 
-def mols_to_image(output_file,mols,same_scale=True,padding=0.00,
-                  black_and_white=False,rotate_degrees=None,
-                  letters_per_row=5,comic_mode=False):
+def mols_to_png(mols,same_scale=True,padding=0.00,
+                black_and_white=False,rotate_degrees=None,
+                letters_per_row=5,comic_mode=False):
     """
 
-    :param output_file: where to output image
     :param mols: list of mols, see ascii_to_mols
     :param same_scale:  see rdkit.Draw.MolDrawOptions https://www.rdkit.org/docs/source/rdkit.Chem.Draw.rdMolDraw2D.html#rdkit.Chem.Draw.rdMolDraw2D.MolDrawOptions
     :param padding:  see rdkit.Draw.MolDrawOptions https://www.rdkit.org/docs/source/rdkit.Chem.Draw.rdMolDraw2D.html#rdkit.Chem.Draw.rdMolDraw2D.MolDrawOptions
@@ -113,7 +105,18 @@ def mols_to_image(output_file,mols,same_scale=True,padding=0.00,
     opt.centreMoleculesBeforeDrawing = False
     img = MolsToGridImage(mols=mols, molsPerRow=letters_per_row,
                           drawOptions=opt)
+    return img
+
+def mols_to_image(output_file,**kw):
+    """
+
+    :param output_file: where to output image
+    :param kw: see mols_to_png
+    :return: nothing, saves the file
+    """
+    img = mols_to_png(**kw)
     img.save(output_file)
+
 
 def _image(string,output_file,one_word_per_line=False,**kw):
     """
@@ -128,7 +131,7 @@ def _image(string,output_file,one_word_per_line=False,**kw):
                                      one_word_per_line=one_word_per_line,
                                      kw=kw)
     mols = ascii_to_mols(string)
-    mols_to_image(output_file,mols,**kw)
+    mols_to_image(output_file=output_file,mols=mols,**kw)
 
 def adjust_kw_as_needed(string,one_word_per_line,kw):
     """
@@ -144,9 +147,9 @@ def adjust_kw_as_needed(string,one_word_per_line,kw):
         kw['letters_per_row'] = length
     return string, kw
 
-def _animate(string,output_file,total_time_s=5,rotation_degrees=90,
-             frames_per_second=10,one_word_per_line=False,loop_forever=True,
-             start_degrees=-45,and_reverse=False,**kw):
+def _animate(string,output_file,total_time_s=5.,rotation_degrees=90.,
+             frames_per_second=10.,one_word_per_line=False,loop_forever=True,
+             start_degrees=-45.,and_reverse=False,**kw):
     """
 
     :param string:  see <_image>
@@ -175,14 +178,15 @@ def _animate(string,output_file,total_time_s=5,rotation_degrees=90,
         start_directions = [[0, +1],[rotation_degrees,-1]]
     else:
         start_directions = [[0, +1]]
+    all_images = []
     with imageio.get_writer(output_file, mode='I',loop=0 if loop_forever else None) as writer:
-        with tempfile.NamedTemporaryFile(suffix=".png") as temp:
-            for start,directions in start_directions:
-                for frame_N in range(0,total_frames,1):
-                    rotate_degrees = start_degrees + start + degrees_per_frame * frame_N * directions
-                    mols_to_image(temp.name, mols, rotate_degrees=rotate_degrees,**kw)
-                    image = imageio.v3.imread(temp.name)
-                    writer.append_data(image)
+        for start,directions in start_directions:
+            for frame_N in range(0,total_frames,1):
+                rotate_degrees = start_degrees + start + degrees_per_frame * frame_N * directions
+                png = mols_to_png(mols, rotate_degrees=rotate_degrees,**kw)
+                writer.append_data(png)
+                all_images.append(png)
+    return all_images
 
 
 @click.group()
@@ -203,7 +207,7 @@ def cli():
 @click.option('--one_word_per_line',  default=False,**kw_true_false,
               help="If true, have one word per row/line (equivalent to setting <letters_per_row> to the longest word length)")
 def image(**kw):
-    _image(**process_arguments(kw))
+    _image(**kw)
 
 @cli.command()
 @click.option('--output_file', required=True,type=click.Path(),
@@ -223,15 +227,15 @@ def image(**kw):
 @click.option('--and_reverse', default=True,**kw_true_false,
               help="If true, animation will run in forward direction then in the reverse direction")
 @click.option('--total_time_s', required=False,
-              default=5,type=float,help="How long for total animation")
+              default=5.,type=float,help="How long for total animation")
 @click.option('--rotation_degrees', required=False,
-              default=90,type=float,help="Total rotation in degrees")
+              default=90.,type=float,help="Total rotation in degrees")
 @click.option('--frames_per_second', required=False,
-              default=10,type=float,help="How many frames per second")
+              default=10.,type=float,help="How many frames per second")
 @click.option('--start_degrees', required=False,
-              default=-45,type=float,help="Where to start animation (0 = 12 o clock, -90 would be 9 o clock, +90 would be 3 o clock, etc)")
+              default=-45.,type=float,help="Where to start animation (0 = 12 o clock, -90 would be 9 o clock, +90 would be 3 o clock, etc)")
 def animate(**kw):
-    _animate(**process_arguments(kw))
+    _animate(**kw)
 
 if __name__ == '__main__':
     cli()
