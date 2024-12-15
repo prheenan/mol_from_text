@@ -19,7 +19,7 @@ Below are the supported characters and their representation:
 
     ~|}{`_^][\@?=><;:/.-,+*)('"'"'&%$#"!9876543210ZYXWVUTSRQPONMLKJIHGFEDCBA
 
-![listing of all availale characters](Docs/all_chars.svg)
+![listing of all available characters](Docs/all_chars.svg)
 
 
 # Installation
