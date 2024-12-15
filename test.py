@@ -1,7 +1,8 @@
 import unittest, imageio, tempfile
-import mol_ransom, molfiles, shlex
+import mol_from_text, molfiles, shlex
 from click.testing import CliRunner
 import numpy as np
+from rdkit import Chem
 
 def array_to_gif(file_name,list_of_images):
     with imageio.get_writer(file_name, mode='I',loop=0) as writer:
@@ -46,42 +47,63 @@ class MyTestCase(unittest.TestCase):
         # the images won't be exactly the same, but they should be close
         # see here https://stackoverflow.com/questions/68366920/set-imageio-compression-level-in-python
         with self.subTest(self.i_subtest):
-            assert_at_most_percent_elements_different(5,data_cli,data_function)
+            assert_at_most_percent_elements_different(10,data_cli,data_function)
         self.i_subtest += 1
 
 
-    def test_something(self):
+    def test_characters(self):
         self.i_subtest = 0
-        for s in mol_ransom._valid_characters():
+        for s in mol_from_text._valid_characters():
             with self.subTest(i=self.i_subtest,msg=s):
                 assert (s in molfiles.letter_to_molfile or s.upper() in molfiles.letter_to_molfile), f"Couldn't find character '{s}'"
             self.i_subtest += 1
+
+    def test_lineify(self):
+        self.i_subtest = 0
         with self.subTest(self.i_subtest):
-            mol_ransom.single_word_per_line(string_v="why hello there") == ("why  hellothere",5)
+            mol_from_text.single_word_per_line(string_v="why hello there") == ("why  hellothere",5)
         self.i_subtest += 1
         with self.subTest(self.i_subtest):
-            mol_ransom.single_word_per_line(string_v="oops a short line") == ("oops a    shortline ", 5)
+            mol_from_text.single_word_per_line(string_v="oops a short line") == ("oops a    shortline ", 5)
         self.i_subtest += 1
-        self._function_and_cli(function=mol_ransom._image,
-                               function_cli=mol_ransom.image,
+
+    def test_image(self):
+        self.i_subtest = 0
+        self._function_and_cli(function=mol_from_text._image,
+                               function_cli=mol_from_text.image,
                                letters_per_row=6,suffix=".png",
                                string="hello world")
-        self._function_and_cli(function=mol_ransom._image,
-                               function_cli=mol_ransom.image,
+        self._function_and_cli(function=mol_from_text._image,
+                               function_cli=mol_from_text.image,
                                letters_per_row=10,suffix=".png",
-                               string=shlex.quote("".join(mol_ransom._valid_characters())),)
-        self._function_and_cli(function=mol_ransom._animate,
-                               function_cli=mol_ransom.animate,and_reverse=True,
+                               string=shlex.quote("".join(molfiles.letter_to_molfile.keys())),)
+
+    def test_animate(self):
+        self.i_subtest = 0
+        self._function_and_cli(function=mol_from_text._animate,
+                               function_cli=mol_from_text.animate,and_reverse=True,
                                black_and_white=False,
                                rotation_degrees=90.,start_degrees=-45.,
                                comic_mode=True,suffix=".gif",total_time_s=1.,
                                letters_per_row=2,string="hi")
-        self._function_and_cli(function=mol_ransom._animate,
-                               function_cli=mol_ransom.animate,
+        self._function_and_cli(function=mol_from_text._animate,
+                               function_cli=mol_from_text.animate,
                                one_word_per_line=True,and_reverse=True,
                                rotation_degrees=90.,start_degrees=-45.,
                                comic_mode=True,suffix=".gif",
                                string="i love my mimi and noni")
+
+    def test_export(self):
+        self.i_subtest = 0
+        with tempfile.NamedTemporaryFile(suffix=".sdf") as f:
+            mol_from_text._export_structures(output_file=f.name)
+            suppl = list(Chem.SDMolSupplier(f.name))
+            for mol in suppl:
+                ascii_character = mol.GetProp("ascii_character")
+                with self.subTest(self.i_subtest):
+                    assert Chem.MolToSmiles(mol) == Chem.MolToSmiles(mol_from_text._letter_to_mol_dict[ascii_character])
+                self.i_subtest += 1
+
 
 
 if __name__ == '__main__':

@@ -1,6 +1,7 @@
 from rdkit import Chem
 from rdkit.Chem import Draw
 import warnings, string
+import cairosvg
 from rdkit.Chem.Draw import MolsToGridImage
 import molfiles
 import imageio, click
@@ -77,9 +78,11 @@ def ascii_to_mols(string):
         rdMolDraw2D.PrepareMolForDrawing(m)
     return mols
 
-def mols_to_png(mols,same_scale=True,padding=0.00,
-                black_and_white=False,rotate_degrees=None,
-                letters_per_row=5,comic_mode=False):
+def mols_to_array(mols,same_scale=True,padding=0.00,
+                  black_and_white=False,rotate_degrees=None,
+                  letters_per_row=5,comic_mode=False,use_svg=False,
+                  dots_per_angstrom=300,font_size=12,bond_width=1.25,
+                  scale=0.055,letter_size_pixels=200):
     """
 
     :param mols: list of mols, see ascii_to_mols
@@ -89,6 +92,12 @@ def mols_to_png(mols,same_scale=True,padding=0.00,
     :param rotate_degrees: how much to rotae molecules (0 is 12 o clock, -90 is 9 o clock, etc)
     :param letters_per_row: how many letters per row
     :param comic_mode:  see rdkit.Draw.MolDrawOptions https://www.rdkit.org/docs/source/rdkit.Chem.Draw.rdMolDraw2D.html#rdkit.Chem.Draw.rdMolDraw2D.MolDrawOptions
+    :param use_svg: if true, use svg instead
+    :param dots_per_angstrom:  see rdkit.Draw.MolDrawOptions https://www.rdkit.org/docs/source/rdkit.Chem.Draw.rdMolDraw2D.html#rdkit.Chem.Draw.rdMolDraw2D.MolDrawOptions
+    :param font_size:  see rdkit.Draw.MolDrawOptions https://www.rdkit.org/docs/source/rdkit.Chem.Draw.rdMolDraw2D.html#rdkit.Chem.Draw.rdMolDraw2D.MolDrawOptions
+    :param bond_width: see rdkit.Draw.MolDrawOptions https://www.rdkit.org/docs/source/rdkit.Chem.Draw.rdMolDraw2D.html#rdkit.Chem.Draw.rdMolDraw2D.MolDrawOptions
+    :param scale:  see rdkit.Draw.MolDrawOptions https://www.rdkit.org/docs/source/rdkit.Chem.Draw.rdMolDraw2D.html#rdkit.Chem.Draw.rdMolDraw2D.MolDrawOptions
+    :param letter_size_pixels: size of each pixel
     :return: nothing
     """
     opt = Draw.MolDrawOptions()
@@ -98,24 +107,48 @@ def mols_to_png(mols,same_scale=True,padding=0.00,
         opt.rotate = rotate_degrees
     opt.prepareMolsBeforeDrawing = False
     opt.drawMolsSameScale = same_scale
+    opt.dotsPerAngstrom = dots_per_angstrom
+    opt.minFontSize = font_size
+    opt.bondLineWidth = bond_width
     if comic_mode:
         opt.comicMode = True
     opt.padding = padding
-    opt.fixedScale = 0.05
+    opt.fixedScale = scale
     opt.centreMoleculesBeforeDrawing = False
     img = MolsToGridImage(mols=mols, molsPerRow=letters_per_row,
-                          drawOptions=opt)
+                          drawOptions=opt,useSVG=use_svg,
+                          subImgSize=(letter_size_pixels,letter_size_pixels))
     return img
+
+def _write_svg(output_file,img):
+    """
+
+    :param output_file: where to output
+    :param img: svg image as string
+    :return:  n/a
+    """
+    with open(output_file, "w") as f:
+        f.write(img)
 
 def mols_to_image(output_file,**kw):
     """
 
     :param output_file: where to output image
-    :param kw: see mols_to_png
+    :param kw: see mols_to_array
     :return: nothing, saves the file
     """
-    img = mols_to_png(**kw)
-    img.save(output_file)
+    img = mols_to_array(use_svg=True,**kw)
+    if output_file.endswith(".png"):
+        # convert from svg to png first, this results in better images, see
+        # https://iwatobipen.wordpress.com/2017/11/03/draw-high-quality-molecular-image-in-rdkit-rdkit/
+        with tempfile.NamedTemporaryFile(suffix=".svg") as f:
+            _write_svg(f.name, img)
+            # scale = 4 seems to give decent results
+            cairosvg.svg2png(url=f.name, write_to=output_file, scale=4.0)
+    elif output_file.endswith(".svg"):
+        _write_svg(output_file, img)
+    else:
+        raise ValueError(f"Didn't understand file extension for {output_file}")
 
 
 def _image(string,output_file,one_word_per_line=False,**kw):
@@ -127,6 +160,10 @@ def _image(string,output_file,one_word_per_line=False,**kw):
     :param kw:  see mols_to_image
     :return:  Nothing
     """
+    if output_file is None:
+        output_file = f"{string}.svg"
+    if not (output_file.endswith(".png") or output_file.endswith(".svg")):
+        raise TypeError(f"Only .png and .svg supported, but given output file:{output_file}")
     string, kw = adjust_kw_as_needed(string=string,
                                      one_word_per_line=one_word_per_line,
                                      kw=kw)
@@ -164,6 +201,10 @@ def _animate(string,output_file,total_time_s=5.,rotation_degrees=90.,
     :param kw: passed to _image
     :return:  nothing
     """
+    if output_file is None:
+        output_file = f"{string}.gif"
+    if not output_file.endswith(".gif"):
+        raise TypeError(f"Only .gif supported, but given output file:{output_file}")
     string, kw = adjust_kw_as_needed(string=string,
                                      one_word_per_line=one_word_per_line,
                                      kw=kw)
@@ -183,34 +224,50 @@ def _animate(string,output_file,total_time_s=5.,rotation_degrees=90.,
         for start,directions in start_directions:
             for frame_N in range(0,total_frames,1):
                 rotate_degrees = start_degrees + start + degrees_per_frame * frame_N * directions
-                png = mols_to_png(mols, rotate_degrees=rotate_degrees,**kw)
+                png = mols_to_array(mols, rotate_degrees=rotate_degrees,
+                                    use_svg=False,**kw)
                 writer.append_data(png)
                 all_images.append(png)
     return all_images
 
+def _export_structures(output_file):
+    with Chem.SDWriter(output_file) as writer:
+        for id_v, mol in _letter_to_mol_dict.items():
+            mol.SetProp('ascii_character', id_v)
+            writer.write(mol)
 
 @click.group()
 def cli():
     pass
 
 @cli.command()
-@click.option('--output_file', required=True,type=click.Path(),
-              help="Name of output file (only png supported)")
 @click.option('--string', required=True,type=str,
               help="What string to convert to molecules")
+@click.option('--output_file', required=False,type=click.Path(),
+              help="Name of output file (only png and svg supported)")
 @click.option('--black_and_white', default=False,**kw_true_false,
               help="If true, use black and white instead of colors")
 @click.option('--comic_mode',  default=False,
               help="If true, use comic-drawing mode (xkcd style)",**kw_true_false)
-@click.option('--letters_per_row', required=False,default=8,type=int,
+@click.option('--letters_per_row', required=False,default=5,type=int,
               help="How many letters per row (i.e., line character limit)")
 @click.option('--one_word_per_line',  default=False,**kw_true_false,
               help="If true, have one word per row/line (equivalent to setting <letters_per_row> to the longest word length)")
+@click.option('--dots_per_angstrom', required=False,
+              default=300.,type=float,help="See rdkit.Draw.MolDrawOptions")
+@click.option('--font_size', required=False,
+              default=12,type=int,help="See rdkit.Draw.MolDrawOptions")
+@click.option('--bond_width', required=False,
+              default=1.25,type=float,help="See rdkit.Draw.MolDrawOptions")
+@click.option('--scale', required=False,
+              default=0.055,type=float,help="See rdkit.Draw.MolDrawOptions")
+@click.option('--letter_size_pixels', required=False,
+              default=200,type=int,help="Individual size of letters")
 def image(**kw):
     _image(**kw)
 
 @cli.command()
-@click.option('--output_file', required=True,type=click.Path(),
+@click.option('--output_file', required=False,type=click.Path(),
               help="Name of output file (only gif supported)")
 @click.option('--string', required=True,type=str,
               help="What string to convert to molecules")
@@ -218,7 +275,7 @@ def image(**kw):
               help="If true, use black and white instead of colors")
 @click.option('--comic_mode',  default=False,
               help="If true, use comic-drawing mode (xkcd style)",**kw_true_false)
-@click.option('--letters_per_row', required=False,default=8,type=int,
+@click.option('--letters_per_row', required=False,default=5,type=int,
               help="How many letters per row (i.e., line character limit)")
 @click.option('--one_word_per_line',  default=False,**kw_true_false,
               help="If true, have one word per row/line (equivalent to setting <letters_per_row> to the longest word length)")
@@ -234,8 +291,24 @@ def image(**kw):
               default=10.,type=float,help="How many frames per second")
 @click.option('--start_degrees', required=False,
               default=-45.,type=float,help="Where to start animation (0 = 12 o clock, -90 would be 9 o clock, +90 would be 3 o clock, etc)")
+@click.option('--dots_per_angstrom', required=False,
+              default=300.,type=float,help="See rdkit.Draw.MolDrawOptions")
+@click.option('--font_size', required=False,
+              default=12,type=int,help="See rdkit.Draw.MolDrawOptions")
+@click.option('--bond_width', required=False,
+              default=1.25,type=float,help="See rdkit.Draw.MolDrawOptions")
+@click.option('--scale', required=False,
+              default=0.055,type=float,help="See rdkit.Draw.MolDrawOptions")
+@click.option('--letter_size_pixels', required=False,
+              default=200,type=int,help="Individual size of letters")
 def animate(**kw):
     _animate(**kw)
+
+@cli.command()
+@click.option('--output_file', required=True,type=click.Path(),
+              help="Name of output file (only .sdf supported)")
+def export_structures(**kw):
+    _export_structures(**kw)
 
 if __name__ == '__main__':
     cli()
