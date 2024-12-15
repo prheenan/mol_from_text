@@ -1,7 +1,7 @@
 # Motivation
 !['4fun' text with letters as molecular structures](Docs/4fun.gif)
 
-We all love rdkit, but hasn't it always been missing a 'MolFromText' function to turn text into structures? 
+We all love rdkit, but hasn't it always been missing a 'MolFromText' function to turn text into structures?
 
 Wouldn't that be cool? Anybody think so? Bueller? No?
 
@@ -44,7 +44,7 @@ This yields the image below as `helloworld.svg`:
 There are many options for modifying the image as given below:
 
     Usage: mol_from_text.py image [OPTIONS]
-    
+
     Options:
       --string TEXT                   What string to convert to molecules
                                       [required]
@@ -67,8 +67,8 @@ There are many options for modifying the image as given below:
       --scale FLOAT                   See rdkit.Draw.MolDrawOptions
       --letter_size_pixels INTEGER    Individual size of letters
       --help                          Show this message and exit.
-    
-        
+
+
 
 ## Making animations
 
@@ -82,9 +82,9 @@ This yields the image below as `helloworld.gif`:
 ![animated hello world image with letters as molecular structures](Docs/helloworld.gif)
 
 There are many animations options as follows:
-    
+
     Usage: mol_from_text.py animate [OPTIONS]
-    
+
     Options:
       --output_file PATH              Name of output file (only gif supported)
       --string TEXT                   What string to convert to molecules
@@ -120,7 +120,7 @@ There are many animations options as follows:
       --help                          Show this message and exit.
 
 
-##  Getting a molfile 
+##  Getting a molfile
 
 If you just want a molfile of all the letters and their structures, that is easy enough:
 

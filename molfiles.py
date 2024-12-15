@@ -9,7 +9,7 @@ letter_to_molfile = {
   0  0  0  0  0  0  0  0  0  0999 V2000
 M  END""",
         "~":r"""
-  Mrv2222 12132422282D          
+  Mrv2222 12132422282D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -37,7 +37,7 @@ M  V30 END CTAB
 M  END
 """,
         "|":r"""
-  Mrv2222 12132422272D          
+  Mrv2222 12132422272D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -65,7 +65,7 @@ M  V30 END CTAB
 M  END
 """,
         "}":r"""
-  Mrv2222 12132422272D          
+  Mrv2222 12132422272D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -95,7 +95,7 @@ M  V30 END CTAB
 M  END
 """,
         "{":r"""
-  Mrv2222 12132422262D          
+  Mrv2222 12132422262D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -125,7 +125,7 @@ M  V30 END CTAB
 M  END
 """,
         "`":r"""
-  Mrv2222 12132422242D          
+  Mrv2222 12132422242D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -141,7 +141,7 @@ M  V30 END CTAB
 M  END
 """,
         "_":r"""
-  Mrv2222 12132422232D          
+  Mrv2222 12132422232D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -163,7 +163,7 @@ M  V30 END CTAB
 M  END
 """,
         "^":r"""
-  Mrv2222 12132422222D          
+  Mrv2222 12132422222D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -193,7 +193,7 @@ M  V30 END CTAB
 M  END
 """,
         "]":r"""
-  Mrv2222 12132422212D          
+  Mrv2222 12132422212D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -229,7 +229,7 @@ M  V30 END CTAB
 M  END
 """,
         "[":r"""
-  Mrv2222 12132422212D          
+  Mrv2222 12132422212D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -265,7 +265,7 @@ M  V30 END CTAB
 M  END
 """,
         "\\":r"""
-  Mrv2222 12132422192D          
+  Mrv2222 12132422192D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -295,7 +295,7 @@ M  V30 END CTAB
 M  END
 """,
         "@":r"""
-  Mrv2222 12132422182D          
+  Mrv2222 12132422182D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -360,7 +360,7 @@ M  V30 END CTAB
 M  END
 """,
         "?":r"""
-  Mrv2222 12132422152D          
+  Mrv2222 12132422152D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -400,7 +400,7 @@ M  V30 END CTAB
 M  END
 """,
         "=":r"""
-  Mrv2222 12132422132D          
+  Mrv2222 12132422132D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -419,7 +419,7 @@ M  V30 END CTAB
 M  END
 """,
         ">":r"""
-  Mrv2222 12132422112D          
+  Mrv2222 12132422112D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -451,7 +451,7 @@ M  V30 END CTAB
 M  END
 """,
         "<":r"""
-  Mrv2222 12132422112D          
+  Mrv2222 12132422112D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -483,7 +483,7 @@ M  V30 END CTAB
 M  END
 """,
         ";":r"""
-  Mrv2222 12132422102D          
+  Mrv2222 12132422102D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -507,7 +507,7 @@ M  V30 END CTAB
 M  END
 """,
         ":":r"""
-  Mrv2222 12132422092D          
+  Mrv2222 12132422092D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -552,7 +552,7 @@ M  V30 END CTAB
 M  END
 """,
         "/":r"""
-  Mrv2222 12132422092D          
+  Mrv2222 12132422092D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -582,7 +582,7 @@ M  V30 END CTAB
 M  END
 """,
         ".":r"""
-  Mrv2222 12132422082D          
+  Mrv2222 12132422082D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -603,7 +603,7 @@ M  V30 END CTAB
 M  END
 """,
         "-":r"""
-  Mrv2222 12132422072D          
+  Mrv2222 12132422072D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -619,7 +619,7 @@ M  V30 END CTAB
 M  END
 """,
         ",":r"""
-  Mrv2222 12132422052D          
+  Mrv2222 12132422052D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -635,7 +635,7 @@ M  V30 END CTAB
 M  END
 """,
         "+":r"""
-  Mrv2222 12132422052D          
+  Mrv2222 12132422052D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -673,7 +673,7 @@ M  V30 END CTAB
 M  END
 """,
         "*":r"""
-  Mrv2222 12132422032D          
+  Mrv2222 12132422032D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -734,7 +734,7 @@ M  V30 END CTAB
 M  END
 """,
         ")":r"""
-  Mrv2222 12132422002D          
+  Mrv2222 12132422002D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -762,7 +762,7 @@ M  V30 END CTAB
 M  END
 """,
         "(":r"""
-  Mrv2222 12132422002D          
+  Mrv2222 12132422002D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -790,7 +790,7 @@ M  V30 END CTAB
 M  END
 """,
         "\'":r"""
-  Mrv2222 12132421592D          
+  Mrv2222 12132421592D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -806,7 +806,7 @@ M  V30 END CTAB
 M  END
 """,
         "&":r"""
-  Mrv2222 12132421572D          
+  Mrv2222 12132421572D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -865,7 +865,7 @@ M  V30 END CTAB
 M  END
 """,
         "%":r"""
-  Mrv2222 12132421552D          
+  Mrv2222 12132421552D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -911,7 +911,7 @@ M  V30 END CTAB
 M  END
 """,
         "$":r"""
-  Mrv2222 12132421542D          
+  Mrv2222 12132421542D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -972,7 +972,7 @@ M  V30 END CTAB
 M  END
 """,
         "#":r"""
-  Mrv2222 12132421522D          
+  Mrv2222 12132421522D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -1047,7 +1047,7 @@ M  V30 END CTAB
 M  END
 """,
         "\"":r"""
-  Mrv2222 12132421492D          
+  Mrv2222 12132421492D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -1066,7 +1066,7 @@ M  V30 END CTAB
 M  END
 """,
         "!":r"""
-  Mrv2222 12132421452D          
+  Mrv2222 12132421452D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -1111,7 +1111,7 @@ M  V30 END CTAB
 M  END
 """,
         "9":r"""
-  Mrv2222 12132421432D          
+  Mrv2222 12132421432D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -1160,7 +1160,7 @@ M  V30 END CTAB
 M  END
 """,
         "8":r"""
-  Mrv2222 12132421422D          
+  Mrv2222 12132421422D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -1222,7 +1222,7 @@ M  V30 END CTAB
 M  END
 """,
         "7":r"""
-  Mrv2222 12132421402D          
+  Mrv2222 12132421402D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -1276,7 +1276,7 @@ M  V30 END CTAB
 M  END
 """,
         "6":r"""
-  Mrv2222 12132417062D          
+  Mrv2222 12132417062D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -1317,7 +1317,7 @@ M  V30 END CTAB
 M  END
 """,
         "5":r"""
-  Mrv2222 12132417052D          
+  Mrv2222 12132417052D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -1367,7 +1367,7 @@ M  V30 END CTAB
 M  END
 """,
         "4":r"""
-  Mrv2222 12132417042D          
+  Mrv2222 12132417042D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -1416,7 +1416,7 @@ M  V30 END CTAB
 M  END
 """,
         "3":r"""
-  Mrv2222 12132417022D          
+  Mrv2222 12132417022D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -1454,7 +1454,7 @@ M  V30 END CTAB
 M  END
 """,
         "2":r"""
-  Mrv2222 12132417012D          
+  Mrv2222 12132417012D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -1500,7 +1500,7 @@ M  V30 END CTAB
 M  END
 """,
         "1":r"""
-  Mrv2222 12132416432D          
+  Mrv2222 12132416432D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -1546,7 +1546,7 @@ M  V30 END CTAB
 M  END
 """,
         "0":r"""
-  Mrv2222 12132416592D          
+  Mrv2222 12132416592D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -1594,7 +1594,7 @@ M  V30 END CTAB
 M  END
 """,
         "Z":r"""
-  Mrv2222 12122415102D          
+  Mrv2222 12122415102D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -1666,7 +1666,7 @@ M  V30 END CTAB
 M  END
 """,
         "Y":r"""
-  Mrv2222 12122415102D          
+  Mrv2222 12122415102D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -1712,7 +1712,7 @@ M  V30 END CTAB
 M  END
 """,
         "X":r"""
-  Mrv2222 12122415082D          
+  Mrv2222 12122415082D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -1784,7 +1784,7 @@ M  V30 END CTAB
 M  END
 """,
         "W":r"""
-  Mrv2222 12122415042D          
+  Mrv2222 12122415042D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -1848,7 +1848,7 @@ M  V30 END CTAB
 M  END
 """,
         "V":r"""
-  Mrv2222 12122415022D          
+  Mrv2222 12122415022D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -1890,7 +1890,7 @@ M  V30 END CTAB
 M  END
 """,
         "U":r"""
-  Mrv2222 12122414582D          
+  Mrv2222 12122414582D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -1944,7 +1944,7 @@ M  V30 END CTAB
 M  END
 """,
         "T":r"""
-  Mrv2222 12122402052D          
+  Mrv2222 12122402052D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -1994,7 +1994,7 @@ M  V30 END CTAB
 M  END
 """,
         "S":r"""
-  Mrv2222 12132415582D          
+  Mrv2222 12132415582D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -2042,7 +2042,7 @@ M  V30 END CTAB
 M  END
 """,
         "R":r"""
-  Mrv2222 12122402042D          
+  Mrv2222 12122402042D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -2103,7 +2103,7 @@ M  V30 END CTAB
 M  END
 """,
         "Q":r"""
-  Mrv2222 12122402032D          
+  Mrv2222 12122402032D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -2160,7 +2160,7 @@ M  V30 END CTAB
 M  END
 """,
         "P":r"""
-  Mrv2222 12122401542D          
+  Mrv2222 12122401542D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -2213,7 +2213,7 @@ M  V30 END CTAB
 M  END
 """,
         "O":r"""
-  Mrv2222 12122401542D          
+  Mrv2222 12122401542D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -2264,7 +2264,7 @@ M  V30 END CTAB
 M  END
 """,
         "N":r"""
-  Mrv2222 12122400442D          
+  Mrv2222 12122400442D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -2326,7 +2326,7 @@ M  V30 END CTAB
 M  END
 """,
         "M":r"""
-  Mrv2222 12122400432D          
+  Mrv2222 12122400432D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -2386,7 +2386,7 @@ M  V30 END CTAB
 M  END
 """,
         "L":r"""
-  Mrv2222 12132415592D          
+  Mrv2222 12132415592D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -2432,7 +2432,7 @@ M  V30 END CTAB
 M  END
 """,
         "K":r"""
-  Mrv2222 12122400422D          
+  Mrv2222 12122400422D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -2500,7 +2500,7 @@ M  V30 END CTAB
 M  END
 """,
         "J":r"""
-  Mrv2222 12122400412D          
+  Mrv2222 12122400412D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -2564,7 +2564,7 @@ M  V30 END CTAB
 M  END
 """,
         "I":r"""
-  Mrv2222 12122400402D          
+  Mrv2222 12122400402D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -2638,7 +2638,7 @@ M  V30 END CTAB
 M  END
 """,
         "H":r"""
-  Mrv2222 12122400392D          
+  Mrv2222 12122400392D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -2697,7 +2697,7 @@ M  V30 END CTAB
 M  END
 """,
         "G":r"""
-  Mrv2222 12122400492D          
+  Mrv2222 12122400492D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -2766,7 +2766,7 @@ M  V30 END CTAB
 M  END
 """,
         "F":r"""
-  Mrv2222 12152415122D          
+  Mrv2222 12152415122D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -2806,7 +2806,7 @@ M  V30 END CTAB
 M  END
 """,
         "E":r"""
-  Mrv2222 12122400322D          
+  Mrv2222 12122400322D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -2872,7 +2872,7 @@ M  V30 END CTAB
 M  END
 """,
         "D":r"""
-  Mrv2222 12122400482D          
+  Mrv2222 12122400482D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -2925,7 +2925,7 @@ M  V30 END CTAB
 M  END
 """,
         "C":r"""
-  Mrv2222 12122400302D          
+  Mrv2222 12122400302D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -2977,7 +2977,7 @@ M  V30 END CTAB
 M  END
 """,
         "B":r"""
-  Mrv2222 12122400462D          
+  Mrv2222 12122400462D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -3045,7 +3045,7 @@ M  V30 END CTAB
 M  END
 """,
         "A": r"""
-  Mrv2222 12122400182D          
+  Mrv2222 12122400182D
 
   0  0  0     0  0            999 V3000
 M  V30 BEGIN CTAB
@@ -3113,4 +3113,3 @@ M  V30 END CTAB
 M  END
 """,
 }
-
