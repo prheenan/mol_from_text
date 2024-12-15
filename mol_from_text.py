@@ -103,8 +103,7 @@ def mols_to_array(mols,same_scale=True,padding=0.00,
     opt.dotsPerAngstrom = dots_per_angstrom
     opt.minFontSize = font_size
     opt.bondLineWidth = bond_width
-    if comic_mode:
-        opt.comicMode = True
+    opt.comicMode = comic_mode
     opt.padding = padding
     opt.fixedScale = scale
     opt.centreMoleculesBeforeDrawing = False
