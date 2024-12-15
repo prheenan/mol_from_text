@@ -8,3 +8,18 @@ repos:
     -   id: end-of-file-fixer
     -   id: check-yaml
     -   id: check-added-large-files
+- repo: local
+  hooks:
+    - id: pylint
+      name: pylint
+      entry: pylint
+      language: system
+      types: [python]
+      require_serial: true
+      args:
+        [
+          "--fail-under=8",
+          "--fail-on=E,W", # fail if errors, critical, or warnings (refactor / convention OK)
+          "--disable=no-name-in-module,protected-access", # disable errors like ' No name 'MolToSmiles' in module 'rdkit.Chem' (no-name-in-module)' since rdkit special
+          "-rn", # Only display messages
+        ]

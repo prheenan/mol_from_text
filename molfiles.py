@@ -2,6 +2,21 @@
 # https://www.rcsb.org/chemical-sketch
 # to generate  these, except for ' '' (blank), which I just used rdkit like so:
 # print(Chem.MolToMolBlock(Chem.MolFromSmiles("")))
+import string
+
+def _valid_characters():
+    """
+
+    :return: list of valid characters which have molefile representation
+    Note this is equivalent to ASCII code 32 to 127, but not including anything
+    lowercase
+
+    See https://www.ascii-code.com/
+    """
+    set_ok_to_miss = {'\t', '\n', '\r', '\x0b', '\x0c'}
+    return [s for s in string.printable if s not in set_ok_to_miss]
+
+
 letter_to_molfile = {
         " ":r"""
      RDKit          2D

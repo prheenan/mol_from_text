@@ -1,14 +1,15 @@
-from rdkit import Chem
-from rdkit.Chem import Draw
-import warnings, string
-import cairosvg
-from rdkit.Chem.Draw import MolsToGridImage
-import molfiles
-import imageio, click
+import warnings
 import math
 import tempfile
-from rdkit.Chem.Draw import rdMolDraw2D
+import cairosvg
+import imageio
+import click
+from rdkit.Chem.Draw import MolsToGridImage, MolDrawOptions
+from rdkit.Chem.Draw.rdMolDraw2D import PrepareMolForDrawing
+from rdkit.Chem import SDWriter, MolFromMolBlock, MolFromSmiles
 from click import ParamType
+import molfiles
+
 
 class BoolType(ParamType):
     def __init__(self):
@@ -26,25 +27,16 @@ class BoolType(ParamType):
             return False
         else:
             self.fail(f"Invalid value: {value}. Expected TRUE/FALSE")
+            return False
+
 
 
 kw_true_false = dict(type=BoolType(),required=False)
 
-
-_letter_to_mol_dict = dict([[l, Chem.MolFromMolBlock(mol_file)]
+_letter_to_mol_dict = dict([[l, MolFromMolBlock(mol_file)]
                             for l, mol_file in molfiles.letter_to_molfile.items()])
 
-def _valid_characters():
-    """
 
-    :return: list of valid characters which have molefile representation
-    Note this is equivalent to ASCII code 32 to 127, but not including anything
-    lowercase
-
-    See https://www.ascii-code.com/
-    """
-    set_ok_to_miss = {'\t', '\n', '\r', '\x0b', '\x0c'}
-    return [s for s in string.printable if s not in set_ok_to_miss]
 
 def single_word_per_line(string_v):
     """
@@ -71,11 +63,12 @@ def ascii_to_mols(string):
     string_upper = [s.upper() for s in string]
     missing_letters = sorted(set(string_upper) - set(_letter_to_mols.keys()) - set(" "))
     if len(missing_letters) > 0:
-        warnings.warn(UserWarning(f"Didn't understand the following letters; will appear blank:{missing_letters}"))
-    mols = [ _letter_to_mols[s] if s in _letter_to_mols else Chem.MolFromSmiles("")
+        msg = f"Don't support these characters; will be blank:{missing_letters}"
+        warnings.warn(UserWarning(msg))
+    mols = [ _letter_to_mols[s] if s in _letter_to_mols else MolFromSmiles("")
              for s in string_upper]
     for m in mols:
-        rdMolDraw2D.PrepareMolForDrawing(m)
+        PrepareMolForDrawing(m)
     return mols
 
 def mols_to_array(mols,same_scale=True,padding=0.00,
@@ -100,7 +93,7 @@ def mols_to_array(mols,same_scale=True,padding=0.00,
     :param letter_size_pixels: size of each pixel
     :return: nothing
     """
-    opt = Draw.MolDrawOptions()
+    opt = MolDrawOptions()
     if black_and_white:
         opt.useBWAtomPalette()
     if rotate_degrees is not None:
@@ -127,7 +120,7 @@ def _write_svg(output_file,img):
     :param img: svg image as string
     :return:  n/a
     """
-    with open(output_file, "w") as f:
+    with open(output_file, "w",encoding="utf8") as f:
         f.write(img)
 
 def mols_to_image(output_file,**kw):
@@ -222,8 +215,8 @@ def _animate(string,output_file,total_time_s=5.,rotation_degrees=90.,
     all_images = []
     with imageio.get_writer(output_file, mode='I',loop=0 if loop_forever else None) as writer:
         for start,directions in start_directions:
-            for frame_N in range(0,total_frames,1):
-                rotate_degrees = start_degrees + start + degrees_per_frame * frame_N * directions
+            for frame_n in range(0,total_frames,1):
+                rotate_degrees = start_degrees + start + degrees_per_frame * frame_n * directions
                 png = mols_to_array(mols, rotate_degrees=rotate_degrees,
                                     use_svg=False,**kw)
                 writer.append_data(png)
@@ -231,9 +224,9 @@ def _animate(string,output_file,total_time_s=5.,rotation_degrees=90.,
     return all_images
 
 def _export_structures(output_file):
-    with Chem.SDWriter(output_file) as writer:
+    with SDWriter(output_file) as writer:
         for id_v, mol in _letter_to_mol_dict.items():
-            mol.SetProp('ascii_character', id_v)
+            mol.SetProp(key='ascii_character', val=id_v)
             writer.write(mol)
 
 @click.group()

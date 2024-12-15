@@ -29,6 +29,11 @@ Below are the supported characters and their representation:
     conda install -f --yes env.yaml
     conda activate mol_ransom
 
+# Testing
+
+    conda activate mol_ransom
+    python test.py
+
 # Usage
 
 ## Making images

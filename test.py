@@ -1,21 +1,42 @@
-import unittest, imageio, tempfile
-import mol_from_text, molfiles, shlex
+import unittest
+import shlex
+import tempfile
+import imageio
 from click.testing import CliRunner
 import numpy as np
-from rdkit import Chem
+from rdkit.Chem import MolToSmiles,SDMolSupplier
+import mol_from_text
+import molfiles
 
-def array_to_gif(file_name,list_of_images):
-    with imageio.get_writer(file_name, mode='I',loop=0) as writer:
-        for im in list_of_images:
-            writer.append_data(im)
 
 def assert_at_most_percent_elements_different(pct,one,two):
+    """
+
+    :param pct: maximum percent which can be different
+    :param one:  array 1
+    :param two:  array 2
+    :return: true if at most pct elements are different
+    """
     assert one.shape == two.shape
     n_different = np.sum(one != two)
     pct_different = 100 * n_different / one.size
     assert pct_different < pct
 
 class MyTestCase(unittest.TestCase):
+    """
+    For pre-commit, see
+
+    https://pre-commit.com/
+
+    For pylint, see
+
+    https://pylint.pycqa.org/en/stable/user_guide/installation/pre-commit-integration.html
+
+    """
+    def __init__(self,*args,**kw):
+        super().__init__(*args,**kw)
+        self.i_subtest = 0
+
     def _read_output(self,f):
         return imageio.v3.imread(f)
 
@@ -53,7 +74,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_characters(self):
         self.i_subtest = 0
-        for s in mol_from_text._valid_characters():
+        for s in molfiles._valid_characters():
             with self.subTest(i=self.i_subtest,msg=s):
                 assert (s in molfiles.letter_to_molfile or s.upper() in molfiles.letter_to_molfile), f"Couldn't find character '{s}'"
             self.i_subtest += 1
@@ -61,10 +82,12 @@ class MyTestCase(unittest.TestCase):
     def test_lineify(self):
         self.i_subtest = 0
         with self.subTest(self.i_subtest):
-            mol_from_text.single_word_per_line(string_v="why hello there") == ("why  hellothere",5)
+            assert mol_from_text.\
+                       single_word_per_line(string_v="why hello there") == ("why  hellothere",5)
         self.i_subtest += 1
         with self.subTest(self.i_subtest):
-            mol_from_text.single_word_per_line(string_v="oops a short line") == ("oops a    shortline ", 5)
+            assert mol_from_text.\
+                       single_word_per_line(string_v="oops a short line") == ("oops a    shortline ", 5)
         self.i_subtest += 1
 
     def test_image(self):
@@ -97,11 +120,11 @@ class MyTestCase(unittest.TestCase):
         self.i_subtest = 0
         with tempfile.NamedTemporaryFile(suffix=".sdf") as f:
             mol_from_text._export_structures(output_file=f.name)
-            suppl = list(Chem.SDMolSupplier(f.name))
+            suppl = list(SDMolSupplier(f.name))
             for mol in suppl:
                 ascii_character = mol.GetProp("ascii_character")
                 with self.subTest(self.i_subtest):
-                    assert Chem.MolToSmiles(mol) == Chem.MolToSmiles(mol_from_text._letter_to_mol_dict[ascii_character])
+                    assert MolToSmiles(mol) == MolToSmiles(mol_from_text._letter_to_mol_dict[ascii_character])
                 self.i_subtest += 1
 
 
