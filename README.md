@@ -137,3 +137,4 @@ This will export an SDF which as a `ascii_character` property for each molecule 
 
 - Support for lowercase? (ASCII 97-122)
 - Incorporate [NanoPutian](https://en.wikipedia.org/wiki/NanoPutian)?
+- Randomly change atoms during animations
