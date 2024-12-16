@@ -26,7 +26,7 @@ Below are the supported characters and their representation:
 
     git clone https://github.com/prheenan/mol_from_text.git
     cd mol_from_text
-    cconda env create --force --yes -f env.yaml
+    conda env create --force --yes -f env.yaml
     conda activate mol_ransom
 
 # Testing
