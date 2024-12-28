@@ -1,3 +1,6 @@
+"""
+Module for converting mols to text
+"""
 import warnings
 import math
 import tempfile
@@ -176,8 +179,47 @@ def adjust_kw_as_needed(string,one_word_per_line,kw):
         kw['letters_per_row'] = length
     return string, kw
 
-def _animate(string,output_file,total_time_s=5.,rotation_degrees=90.,
-             frames_per_second=10.,one_word_per_line=False,loop_forever=True,
+def animate_mols(output_file,mols,total_time_s=5.,rotation_degrees=90.,
+                 frames_per_second=10.,loop_forever=True,
+                 start_degrees=-45.,and_reverse=False,**kw):
+    """
+
+    :param output_file: see _animate
+    :param mols:
+    :param total_time_s: see _animate
+    :param rotation_degrees: see _animate
+    :param frames_per_second: see _animate
+    :param loop_forever: see _animate
+    :param start_degrees: see _animate
+    :param and_reverse: see _animate
+    :param kw: passed to mols_to_array
+    :return: list of images
+    """
+    # if going in reverse with N frames total, must have 1/2 the frames in
+    # forward direction and 1/2 the frames in the reverse direction
+    factor = 0.5 if and_reverse else 1
+    total_frames = int(math.ceil(total_time_s * frames_per_second) * factor)
+    degrees_per_frame = rotation_degrees / total_frames
+    assert total_frames > 1, "Must have at least one frame"
+    if and_reverse:
+        start_directions = [[0, +1], [rotation_degrees, -1]]
+    else:
+        start_directions = [[0, +1]]
+    all_images = []
+    with imageio.get_writer(output_file, mode='I',
+                            loop=0 if loop_forever else None) as writer:
+        for start, directions in start_directions:
+            for frame_n in range(0, total_frames, 1):
+                rotate_degrees = start_degrees + start + degrees_per_frame * frame_n * directions
+                png = mols_to_array(mols, rotate_degrees=rotate_degrees,
+                                    use_svg=False, **kw)
+                writer.append_data(png)
+                all_images.append(png)
+    return all_images
+
+def _animate(string,output_file,one_word_per_line=False,total_time_s=5.,
+             rotation_degrees=90.,
+             frames_per_second=10.,loop_forever=True,
              start_degrees=-45.,and_reverse=False,**kw):
     """
 
@@ -200,26 +242,12 @@ def _animate(string,output_file,total_time_s=5.,rotation_degrees=90.,
     string, kw = adjust_kw_as_needed(string=string,
                                      one_word_per_line=one_word_per_line,
                                      kw=kw)
-    # if going in reverse with N frames total, must have 1/2 the frames in
-    # forward direction and 1/2 the frames in the reverse direction
-    factor = 0.5 if and_reverse else 1
-    total_frames = int(math.ceil(total_time_s*frames_per_second) * factor)
-    degrees_per_frame = rotation_degrees/total_frames
-    assert total_frames > 1 , "Must have at least one frame"
     mols = ascii_to_mols(string)
-    if and_reverse:
-        start_directions = [[0, +1],[rotation_degrees,-1]]
-    else:
-        start_directions = [[0, +1]]
-    all_images = []
-    with imageio.get_writer(output_file, mode='I',loop=0 if loop_forever else None) as writer:
-        for start,directions in start_directions:
-            for frame_n in range(0,total_frames,1):
-                rotate_degrees = start_degrees + start + degrees_per_frame * frame_n * directions
-                png = mols_to_array(mols, rotate_degrees=rotate_degrees,
-                                    use_svg=False,**kw)
-                writer.append_data(png)
-                all_images.append(png)
+    all_images = \
+        animate_mols(output_file, mols, total_time_s=total_time_s,
+                     rotation_degrees=rotation_degrees,
+                     frames_per_second=frames_per_second, loop_forever=loop_forever,
+                     start_degrees=start_degrees, and_reverse=and_reverse, **kw)
     return all_images
 
 def _export_structures(output_file):
